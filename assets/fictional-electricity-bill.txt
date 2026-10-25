@@ -1,0 +1,6 @@
+FICTIONAL DOCUMENT — SCHOOL DEMONSTRATION ONLY
+SmartBudget JA sample electricity bill
+Billing period: October 2026
+Amount due: JMD 9,000.00
+Description: Fictional household electricity usage.
+This is not a real bill. Uploading it does not create a transaction.
