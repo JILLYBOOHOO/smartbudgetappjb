@@ -17,8 +17,15 @@ def speedometer_figure(state,light=False):
     fig=go.Figure()
     x,y=arc(0,100)
     fig.add_scatter(x=x,y=y,mode='lines',line=dict(color='#c5d5e6' if light else '#152c42',width=22),hoverinfo='skip',showlegend=False)
-    for lo,hi,color in [(0,25,'#00d9ff'),(25,50,'#39e88b'),(50,65,'#c8ec22'),(65,80,'#ffbc45'),(80,100,'#ff4979')]:
-        x,y=arc(lo,hi)
+    # Small overlapping strokes blend the palette continuously along the arc.
+    stops=[(0,(0,217,255)),(35,(57,232,139)),(58,(200,236,34)),(75,(255,188,69)),(100,(255,73,121))]
+    for lo in range(100):
+        midpoint=lo+.5
+        left,right=next((a,b) for a,b in zip(stops,stops[1:]) if a[0]<=midpoint<=b[0])
+        blend=(midpoint-left[0])/(right[0]-left[0])
+        channels=[round(a+(b-a)*blend) for a,b in zip(left[1],right[1])]
+        color='rgb('+','.join(map(str,channels))+')'
+        x,y=arc(lo,min(lo+1.15,100))
         fig.add_scatter(x=x,y=y,mode='lines',line=dict(color=color,width=12),hoverinfo='skip',showlegend=False)
     tx=[];ty=[]
     for v in range(0,101,5):
