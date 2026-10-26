@@ -6,3 +6,4 @@ textColor = "#F5F9FF"
 font = "sans serif"
 [server]
 maxUploadSize = 10
+fileWatcherType = "none"

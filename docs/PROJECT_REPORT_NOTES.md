@@ -14,6 +14,8 @@ SmartBudget JA helps a Jamaican user record JMD income and expenses, compare mon
 
 ## Technical Reflection
 
+The later usability revision adds reactive category suggestions using merchant/description rules, a compact tabbed transaction popup, and bank-statement drafts from text PDFs/TXT and bank CSV columns. Opening/closing balance summary rows and trailing running balances are excluded. PDF row extraction is deliberately limited to recognizable dated lines; ambiguous money directions start excluded in the editable preview. Income, expense and category summaries are computed for the rows the user includes. The source text can be downloaded, and no bank transaction is persisted until the review checkbox and Import action are used. Tests cover parsing, categorization, overrides, review and duplicate prevention. This remains local rule-based processing, not an LLM or universal bank parser.
+
 `st.session_state` keeps navigation, reporting month, appearance, filter widget values and chat across Streamlit reruns. It is not durable storage. Separate JSON collections preserve records on disk. UUIDs identify records. Atomic temporary-file replacements reduce partial-write risk; invalid/corrupt data is preserved with an error. This is not a transactional database and assumes one user/process.
 
 Amounts pass through Decimal rounding and are stored as integer cents; this avoids binary floating-point errors in financial totals. Savings allocations live inside goal records separately from expense transactions, so recording savings does not double-count spending. Plots receive converted amounts only for display.

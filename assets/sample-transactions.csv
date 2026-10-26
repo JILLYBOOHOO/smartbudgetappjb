@@ -1,0 +1,4 @@
+date,description,amount,type,category
+2026-10-01,Fictional salary,150000,Income,Salary
+2026-10-02,Fictional supermarket receipt,2500,Expense,Groceries
+2026-10-03,Fictional taxi fare,800,Expense,Transportation

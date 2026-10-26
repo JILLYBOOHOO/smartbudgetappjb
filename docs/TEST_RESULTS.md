@@ -1,5 +1,25 @@
 # Verification record
 
+## Premium UI redesign
+
+31 tests passed in 40.04 seconds. The full regression suite plus global-search/month-navigation coverage passed. Actual browser checks covered all five screens in both themes at 1440px and the dashboard at seven requested widths in both themes. A 320px billion-dollar-value fixture remained fully visible. All six existing user JSON files were byte-for-byte unchanged. See UI_REDESIGN.md for verification scope and limits.
+
+## Compact entry and bank-statement revision
+
+**30 tests passed in 33.94 seconds.** Added tests for merchant-based category suggestions and manual overrides; debit/credit bank CSV parsing; exclusion of opening balances and running balances; PDF-extracted text row parsing; date-order selection; ambiguous direction flags; unsupported row handling; statement preview analysis, confirmed import and duplicate prevention. Existing quick-entry, upload, finance and storage tests also passed. Bank statement UI tests use an injected uploader file fixture, not the operating-system file chooser.
+
+Entry fields now use two-column rows with a separate optional-details tab. The popup's actual layout is checked in the running browser. This does not claim every device/zoom/keyboard combination will fit without scrolling. Bank PDFs are parsed heuristically from extracted text; complex/wrapped layouts may require CSV. Full dates and decimal monetary values are required for PDF/TXT rows. Scanned PDFs remain unsupported; there is no OCR. All statement previews and summaries are local. Only explicitly included and confirmed rows are imported.
+
+## Usability revision
+
+**24 tests passed in 27.97 seconds** after the quick-entry and upload redesign. The full suite includes the original financial/storage checks plus one-line amount/category/date suggestions, receipt-total detection, CSV row validation, optional income source and description, saving from the quick popup, budget and savings Smart Action popup saves, reviewed document-to-transaction creation, reviewed CSV import and duplicate-import prevention. Upload UI tests inject a BytesIO fixture at the uploader boundary and exercise the actual preview/save controls; they do not automate the operating-system file chooser.
+
+The running browser was checked for the simplified controls and compact popup, including dismissal. A screenshot of the actual revised quick-entry popup is supplied alongside the project ZIP. No test records were added to the user's ledger. A bug found during testing where a budget popup lost its open state before saving was corrected. A receipt parser bug matching “total” inside “subtotal” was also corrected. On this Windows sandbox the UI test runner needed loopback network access; early stalled runs were stopped and the final full run passed.
+
+Photos/scanned PDFs still have no OCR support. Text-based PDF/TXT/CSV is supported. Suggestions are local deterministic extraction, not a language model. New one-line and document paths always require a reviewed Save or Import action before recording financial data.
+
+## Initial build
+
 Tested on Windows with Python 3.14.7, Streamlit 1.66.1, pandas 3.1.0, Plotly 6.9.0, pypdf 6.21.2 and pytest 9.1.1.
 
 **16 tests passed in 37.70 seconds.** Two non-failing pandas forward-compatibility warnings occurred while choosing text columns for CSV export. Python compilation also passed.
