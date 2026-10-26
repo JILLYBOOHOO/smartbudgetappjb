@@ -222,3 +222,63 @@ def test_sidebar_savings_opens_visible_manager(tmp_path,monkeypatch):
     assert not app.exception
     assert Store(tmp_path).load('goals')[0]['contributions'][0]['amount']==2000000
 
+
+def test_scanned_pdf_requires_ocr_click_and_review(tmp_path,monkeypatch):
+    from pypdf import PdfWriter
+    import services.ocr as ocr
+    monkeypatch.setenv('SMARTBUDGET_DATA',str(tmp_path))
+    file=BytesIO();writer=PdfWriter();writer.add_blank_page(300,300);writer.write(file);file.name='receipt-scan.pdf'
+    monkeypatch.setattr(st,'file_uploader',lambda *args,**kwargs:file)
+    calls=[]
+    def read(*args):
+        calls.append(1);return 'JPS Electricity receipt\n2026-10-01\nTotal: JMD 9000.00'
+    monkeypatch.setattr(ocr,'ocr_pdf',read)
+    app=AppTest.from_file(str(APP),default_timeout=30).run()
+    app.sidebar.radio[0].set_value('Documents').run()
+    assert not app.exception and not calls
+    next(b for b in app.button if b.label=='Read scanned PDF with OCR').click().run()
+    assert not app.exception and len(calls)==1
+    assert any('OCR' in w.value for w in app.warning)
+    assert not Store(tmp_path).load('transactions')
+    next(b for b in app.button if b.label=='Keep document and review transaction').click().run()
+    assert len(calls)==1
+    assert not app.exception and not Store(tmp_path).load('transactions')
+    assert next(w for w in app.text_input if w.label=='Amount (JMD)').value=='9000'
+
+def test_camera_receipt_review_and_duplicate_prevention(tmp_path,monkeypatch):
+    from PIL import Image
+    import services.ocr as ocr
+    monkeypatch.setenv('SMARTBUDGET_DATA',str(tmp_path))
+    photo=BytesIO();Image.new('RGB',(100,100),'white').save(photo,format='JPEG');photo.name='camera.jpg'
+    monkeypatch.setattr(st,'camera_input',lambda *a,**k:photo)
+    monkeypatch.setattr(st,'file_uploader',lambda *a,**k:None)
+    calls=[]
+    def read(*args):calls.append(1);return 'JPS Electricity\n2026-10-01\nTotal: JMD 9000.00'
+    monkeypatch.setattr(ocr,'ocr_pdf',read)
+    app=AppTest.from_file(str(APP),default_timeout=30).run()
+    next(b for b in app.button if b.label=='Capture receipt').click().run()
+    assert not app.exception and not calls
+    next(b for b in app.button if b.label=='Read receipt photo').click().run()
+    assert not app.exception and len(calls)==1
+    assert not Store(tmp_path).load('documents') and not Store(tmp_path).load('transactions')
+    next(b for b in app.button if b.label=='Keep receipt and review transaction').click().run()
+    assert not app.exception and len(calls)==1
+    assert len(Store(tmp_path).load('documents'))==1 and not Store(tmp_path).load('transactions')
+    next(b for b in app.button if b.label=='Save transaction').click().run()
+    assert not app.exception
+    assert Store(tmp_path).load('transactions')[0]['amount']==900000
+    next(b for b in app.button if b.label=='Capture receipt').click().run()
+    assert not app.exception and len(Store(tmp_path).load('transactions'))==1
+    assert not any(b.label=='Save transaction' for b in app.button)
+
+def test_spending_speed_uses_persisted_total_budget(tmp_path,monkeypatch):
+    from services.core import uid
+    monkeypatch.setenv('SMARTBUDGET_DATA',str(tmp_path))
+    store=Store(tmp_path);seed(store)
+    store.put('budgets',dict(id=uid(),month='2026-10',category='All spending',limit=1000000,threshold=80))
+    store.put('transactions',dict(id=uid(),type='Expense',category='Groceries',amount=1250000,date='2026-10-01',description='Practice purchase',payment='Cash',source='',notes=''))
+    app=AppTest.from_file(str(APP),default_timeout=30).run()
+    assert not app.exception
+    assert any(h.value=='Spending speed' for h in app.subheader)
+    assert any(m.label=='Over budget' and m.value=='J$2,500.00' for m in app.metric)
+    assert any('needle stops at 100%' in c.value for c in app.caption)

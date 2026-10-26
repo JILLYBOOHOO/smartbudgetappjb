@@ -1,5 +1,22 @@
 # Verification record
 
+## Spending-speed gauge
+
+44 tests passed in 113.74 seconds. New tests check saved overall-budget selection without summing category limits; unbounded numerical usage versus the capped needle; exact remaining cents; equal/ahead pace; past/future months; leap-year month length; and the rendered Streamlit workflow with a persisted over-budget record. Plotly receives actual selected-month expense and budget values. The gauge has a needle, colored bands, calendar marker and numerical/text alternatives. Browser pixel rendering was not verified for this update. Financial records were not changed by tests.
+
+
+## Dashboard camera capture
+
+38 tests passed in 60.03 seconds. The camera action opens a native Streamlit camera widget with a JPEG/PNG upload fallback. AppTest supplies a simulated camera image and verifies explicit OCR, document review, final transaction saving, session OCR reuse and linked-receipt duplicate blocking. Image conversion validates format, dimensions and size. A separate real Windows OCR run converted a test image to PDF and recovered the expected sample amounts 2500.00, 50000.00 and 7000.00. Physical webcam capture, device selection and browser permission prompts were not tested; browser rendering was not verified for this update.
+
+
+## Local scanned-PDF OCR update
+
+36 tests passed in 48.76 seconds. New checks cover the optional OCR action, session reuse, reviewed receipt flow without automatic financial writes, invalid/oversized PDFs, the 20-page limit, process failure/timeout and temporary-file cleanup. Service-process unit checks use mocks; a separate real Windows OCR run processed an image-only test statement and recovered 2500.00, 50000.00 and 7000.00. One date lost its separators, demonstrating that OCR output requires review. A low-resolution sample also showed recognition errors. The exact dummy_statement.pdf was not supplied, so its extraction was not verified. No new browser rendering verification was performed for this update. No financial records were created by testing.
+
+The adapter uses the installed Windows PDF renderer and OCR engine in memory. It runs trusted packaged PowerShell commands without changing system execution-policy settings. There are no additional pip dependencies or external document uploads. JPG/PNG uploads remain unsupported.
+
+
 ## Premium UI redesign
 
 31 tests passed in 40.04 seconds. The full regression suite plus global-search/month-navigation coverage passed. Actual browser checks covered all five screens in both themes at 1440px and the dashboard at seven requested widths in both themes. A 320px billion-dollar-value fixture remained fully visible. All six existing user JSON files were byte-for-byte unchanged. See UI_REDESIGN.md for verification scope and limits.

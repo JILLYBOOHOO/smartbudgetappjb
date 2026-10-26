@@ -42,6 +42,13 @@ def apply_theme(light=False):
     }
     css=(Path(__file__).parent/'theme.css').read_text(encoding='utf-8')
     for name,value in values.items(): css=css.replace('{{'+name+'}}',value)
+    if light: css += (Path(__file__).parent/'light-actions.css').read_text(encoding='utf-8')
+    neo = ('--neo-shadow:#a9b9cf99;--neo-highlight:#ffffff;--neo-edge:#ffffffcc;--neo-well:#e9f0f9;' if light else '--neo-shadow:#000711cc;--neo-highlight:#29405a80;--neo-edge:#46617c55;--neo-well:#0b1729;')
+    css += ':root{'+neo+'}' + (Path(__file__).parent/'dashboard-neumorphic.css').read_text(encoding='utf-8')
+    hud = ('--hud-surface:#f8fbff;--hud-base:#dce7f5;--hud-ink:#10213b;--hud-shadow:#9eb0c669;--hud-focus:#10213b;' if light else '--hud-surface:#050a12;--hud-base:#02050a;--hud-ink:#f5f9ff;--hud-shadow:#00000099;--hud-focus:#00d9ff;')
+    css += ':root{'+hud+'}' + (Path(__file__).parent/'quick-actions-hud.css').read_text(encoding='utf-8')
+    css += (Path(__file__).parent/'quick-actions-orbit.css').read_text(encoding='utf-8')
+    css += (Path(__file__).parent/'quick-actions-glass.css').read_text(encoding='utf-8')
     st.markdown('<style>'+css+'</style>',unsafe_allow_html=True)
 
 def brand():
@@ -56,7 +63,7 @@ def page_intro(title,subtitle,eyebrow='SMARTBUDGET JA'):
 
 def summary_cards(items, history=None, progress=0):
     from components.financial_widgets import financial_cards
-    financial_cards(items, st.session_state.get('theme') == 'Light', history, progress)
+    return financial_cards(items, st.session_state.get('theme') == 'Light', history, progress)
 
 def recent_rows(rows):
     if not rows:

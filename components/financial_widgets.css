@@ -28,3 +28,48 @@
 .savings .frame-outer{fill:transparent;stroke:#baff38}.savings .frame-inner{fill:transparent;stroke:#336a00}.savings .frame-light{stroke:#efffc7}
 .savings .money-value,.light .savings .money-value{color:#102600;text-shadow:none}.savings .money-icon{color:#173400;background:linear-gradient(140deg,#efffba,#69df0b);box-shadow:inset 1px 1px 2px #fff9,0 3px 10px #24500033}
 .savings .goal-track{border-color:#346500;background:#28510026}.savings .goal-track>div{background:#285100;box-shadow:none}
+/* Directional shadows add sculpted depth to the existing card frames. */
+.instrument-frame{filter:drop-shadow(6px 7px 7px #00000080) drop-shadow(-3px -3px 5px #3b587d44)}
+.light .instrument-frame{filter:drop-shadow(6px 7px 7px #9bacc66b) drop-shadow(-4px -4px 5px #ffffff)}
+.money-icon{box-shadow:5px 5px 10px #00000066,-3px -3px 7px rgba(var(--rgb),.15),inset 1px 1px 2px #ffffffb3,inset -2px -2px 4px #00334933}
+.light .money-icon{box-shadow:4px 4px 8px #6b87a54d,-3px -3px 7px #ffffffbf,inset 1px 1px 2px #ffffffb3}
+.goal-track{box-shadow:inset 2px 2px 4px #00000055,inset -1px -1px 3px #ffffff26}
+.savings{box-shadow:inset 3px 3px 7px #ffffff70,inset -4px -4px 9px #4478004d}
+.savings .money-icon{box-shadow:4px 4px 9px #37610044,-3px -3px 7px #e5ff8b99,inset 1px 1px 2px #ffffffcc}
+/* Rounded molded summary cards replace the flat angular frame treatment. */
+.money-grid{gap:17px;padding:10px 8px 17px;--neo-shadow:#000711cc;--neo-highlight:#29405a80}
+.money-grid.light{--neo-shadow:#a9b9cf99;--neo-highlight:#ffffff}
+.money-card{border-radius:25px!important;border:1px solid rgba(var(--rgb),.35);background:linear-gradient(140deg,rgba(var(--rgb),.12),transparent 75%),var(--base);box-shadow:9px 9px 18px var(--neo-shadow),-7px -7px 16px var(--neo-highlight),inset 1px 1px 2px #ffffff38,inset -2px -2px 5px #00000020;overflow:hidden;padding:19px 17px 14px}
+.money-card:hover{box-shadow:12px 12px 23px var(--neo-shadow),-8px -8px 18px var(--neo-highlight),inset 1px 1px 2px #ffffff55}
+.instrument-frame{display:none}
+.money-card::before{left:18px;top:1px;width:30%;height:2px;opacity:.7;box-shadow:none}
+.money-card::after{display:none}
+.money-icon{border-radius:14px;box-shadow:5px 5px 10px #00000066,-3px -3px 8px rgba(var(--rgb),.15),inset 2px 2px 3px #ffffffaa,inset -2px -2px 4px #00000022}
+.light .money-icon{box-shadow:5px 5px 10px #8ca4bf66,-4px -4px 9px #ffffff,inset 2px 2px 3px #ffffffaa}
+.savings{clip-path:none!important;background:linear-gradient(125deg,#39FF14 0%,#80FF0A 50%,#CCFF00 100%);border-color:#75c310}
+.goal-track{height:10px;box-shadow:inset 3px 3px 6px #00000044,inset -2px -2px 5px #ffffff66}
+@media(max-width:768px){.money-grid{gap:13px;padding:7px 5px 13px}.money-card{border-radius:21px!important;padding:13px 12px 11px;box-shadow:6px 6px 12px var(--neo-shadow),-4px -4px 10px var(--neo-highlight),inset 1px 1px 2px #ffffff40}.money-icon{border-radius:10px}}
+/* Local glass/parallax treatment: no remote scripts or device permissions. */
+.money-grid{perspective:1100px}
+.money-card{--tilt-x:0deg;--tilt-y:0deg;--spot-x:50%;--spot-y:35%;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 45%),linear-gradient(145deg,rgba(var(--rgb),.16),transparent 80%),rgba(6,17,36,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transform:perspective(850px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));transition:transform .18s ease-out,box-shadow .2s;touch-action:pan-y pinch-zoom;border-color:rgba(var(--rgb),.5)}
+.light .money-card{background:linear-gradient(135deg,#ffffffed,#f4f8ffcc),var(--base)}
+.money-card::before{inset:0;width:auto;height:auto;border-radius:inherit;transform:none;background:radial-gradient(circle at var(--spot-x) var(--spot-y),rgba(var(--rgb),.28),transparent 65%);opacity:0;pointer-events:none;transition:opacity .2s;box-shadow:none;z-index:0}
+.money-card.glass-active::before{opacity:1}
+.money-card> *{position:relative;z-index:1}
+.money-card.savings,.light .money-card.savings{background:linear-gradient(125deg,#39FF14 0%,#80FF0A 50%,#CCFF00 100%)}
+.money-card.savings::before{background:radial-gradient(circle at var(--spot-x) var(--spot-y),#ffffff80,transparent 65%)}
+@media(prefers-reduced-motion:reduce){.money-card,.money-card:hover{transform:none!important}.money-card::before{display:none}}
+/* Sci-fi frames with glass spotlight; keep animations from owning transform. */
+@keyframes reveal{from{opacity:0}to{opacity:1}}
+.money-card,.money-card:hover{border-radius:8px!important;transform:perspective(850px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg));border:0;overflow:visible;box-shadow:0 8px 18px #0005,0 0 12px rgba(var(--rgb),.16);clip-path:polygon(7% 0,93% 0,100% 12%,100% 88%,93% 100%,7% 100%,0 88%,0 12%)}
+.money-card.savings{clip-path:polygon(7% 0,93% 0,100% 12%,100% 88%,93% 100%,7% 100%,0 88%,0 12%)!important}
+.money-card .instrument-frame{display:block;position:absolute;inset:0;z-index:2;pointer-events:none;filter:drop-shadow(0 0 4px rgba(var(--rgb),.6))}
+.money-card .frame-outer,.money-card .frame-inner{fill:none}
+.money-card::before{border-radius:8px}
+.money-card:hover::before{opacity:1}
+.money-icon{border-radius:9px}
+@media(prefers-reduced-motion:reduce){.money-card,.money-card:hover{transform:none!important}}
+.record-card{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.record-card:focus-visible{outline:3px solid var(--tone);outline-offset:4px;filter:brightness(1.12)}
+.card-add-hint{font-size:10px;font-weight:650;color:var(--fg);margin-top:8px;line-height:1.4;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:768px){.card-add-hint{font-size:9px;margin-top:6px}}

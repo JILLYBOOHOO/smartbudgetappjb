@@ -1,0 +1,21 @@
+/* Opaque action surfaces for the app's light appearance. */
+.st-key-quick_actions [data-testid="stColumn"]{--action:#075985;--tile-start:#38bdf8;--tile-end:#7dd3fc}
+.st-key-quick_actions [data-testid="stColumn"]:nth-child(2){--action:#9f1239;--tile-start:#fb7185;--tile-end:#fda4af}
+.st-key-quick_actions [data-testid="stColumn"]:nth-child(3){--action:#5b21b6;--tile-start:#b894f4;--tile-end:#d2b8ff}
+.st-key-quick_actions [data-testid="stColumn"]:nth-child(4){--action:#854d0e;--tile-start:#fbbf24;--tile-end:#fde68a}
+.st-key-quick_actions [data-testid="stColumn"]:nth-child(5){--action:#115e59;--tile-start:#2dd4bf;--tile-end:#72e8d5}
+.st-key-quick_actions [data-testid="stColumn"]:nth-child(6){--action:#86198f;--tile-start:#f092de;--tile-end:#dba5ff}
+.st-key-quick_actions button{background:linear-gradient(130deg,var(--tile-start),var(--tile-end))!important;color:#10213b!important;border:1px solid var(--action)!important;box-shadow:inset 0 1px 0 #ffffff99,inset 0 0 0 4px #ffffff24,0 4px 10px #15304d20!important}
+.st-key-quick_actions button p{color:#10213b!important;font-weight:650!important;text-shadow:none!important}
+.st-key-quick_actions button span[data-testid="stIconMaterial"]{color:var(--action)!important;background:#ffffffdd!important;border-color:var(--action)!important;text-shadow:none!important;box-shadow:0 2px 5px #18324b20!important}
+.st-key-quick_actions button::before{background:var(--action);box-shadow:none;opacity:.6}
+.st-key-quick_actions button:hover{background:linear-gradient(130deg,var(--tile-end),var(--tile-start))!important;box-shadow:0 6px 14px #15304d30!important;border-color:#10213b!important}
+.st-key-quick_actions button:focus-visible{outline:3px solid #10213b!important;outline-offset:3px}
+/* Soft raised surfaces keep the solid, readable light-mode action colors. */
+.st-key-quick_actions button{box-shadow:7px 7px 15px #9eafc66b,-6px -6px 14px #ffffffed,inset 1px 1px 2px #ffffffa6,inset -2px -2px 5px #33577830!important}
+.st-key-quick_actions button:hover{box-shadow:9px 9px 18px #9eafc680,-7px -7px 16px #ffffff,inset 1px 1px 2px #ffffffb3!important}
+.st-key-quick_actions button:active{box-shadow:inset 5px 5px 10px #4b658455,inset -4px -4px 9px #ffffff99!important}
+.st-key-quick_actions button span[data-testid="stIconMaterial"]{background:linear-gradient(145deg,#ffffff,#e7edf6)!important;box-shadow:4px 4px 8px #536f8e45,-3px -3px 7px #ffffffb3,inset 1px 1px 1px #ffffff!important}
+.st-key-income_panel,.st-key-spending_panel{box-shadow:inset 5px 5px 12px #a7bad34d,inset -5px -5px 12px #ffffff,1px 1px 0 #ffffff!important}
+.st-key-recent_panel,.st-key-insights_panel{box-shadow:7px 7px 16px #a7bad354,-5px -5px 13px #ffffff,inset 1px 1px 1px #ffffff!important}
+.st-key-income_panel [data-testid="stSelectbox"] [role="group"],.st-key-spending_panel [data-testid="stSelectbox"] [role="group"]{box-shadow:inset 3px 3px 7px #a3b5cc4d,inset -3px -3px 7px #ffffff}

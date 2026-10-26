@@ -1,0 +1,12 @@
+/* Pronounced soft-UI dashboard surfaces. Loaded after the theme action styles. */
+.st-key-quick_actions{padding:8px 5px 13px}
+.st-key-quick_actions button{border-radius:23px!important;border-width:1px!important;box-shadow:10px 10px 19px var(--neo-shadow),-8px -8px 18px var(--neo-highlight),inset 2px 2px 3px #ffffff55,inset -3px -3px 6px #00000024!important}
+.st-key-quick_actions button::before,.st-key-quick_actions button::after{display:none}
+.st-key-quick_actions button:hover{box-shadow:13px 13px 23px var(--neo-shadow),-9px -9px 20px var(--neo-highlight),inset 2px 2px 3px #ffffff66!important;transform:translateY(-3px)}
+.st-key-quick_actions button:active{box-shadow:inset 6px 6px 12px var(--neo-shadow),inset -5px -5px 11px var(--neo-highlight)!important;transform:translateY(1px) scale(.97)}
+.st-key-quick_actions button span[data-testid="stIconMaterial"]{width:47px!important;height:47px!important;border:0!important;box-shadow:inset 4px 4px 8px var(--neo-shadow),inset -3px -3px 7px var(--neo-highlight)!important}
+.st-key-income_panel,.st-key-spending_panel{border:1px solid var(--neo-edge)!important;border-radius:26px!important;background:var(--neo-well)!important;box-shadow:inset 7px 7px 15px var(--neo-shadow),inset -6px -6px 14px var(--neo-highlight)!important;padding:18px!important}
+.st-key-income_panel::before,.st-key-spending_panel::before,.st-key-insights_panel::before{display:none}
+.st-key-recent_panel,.st-key-insights_panel{border:1px solid var(--neo-edge)!important;border-radius:25px!important;background:var(--surface)!important;box-shadow:9px 9px 19px var(--neo-shadow),-7px -7px 17px var(--neo-highlight),inset 1px 1px 2px #ffffff33!important;padding:17px!important}
+.st-key-income_panel [data-testid="stSelectbox"] [role="group"],.st-key-spending_panel [data-testid="stSelectbox"] [role="group"]{border-radius:13px!important;border-color:var(--neo-edge)!important;box-shadow:inset 3px 3px 7px var(--neo-shadow),inset -3px -3px 7px var(--neo-highlight)!important}
+@media(max-width:768px){.st-key-quick_actions button{border-radius:18px!important;box-shadow:6px 6px 12px var(--neo-shadow),-4px -4px 10px var(--neo-highlight),inset 1px 1px 2px #ffffff55!important}.st-key-quick_actions button span[data-testid="stIconMaterial"]{width:35px!important;height:35px!important}.st-key-income_panel,.st-key-spending_panel{padding:14px!important}}

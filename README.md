@@ -14,6 +14,24 @@ py -m venv .venv
 
 Open the localhost address printed by Streamlit. With an activated environment, the equivalent startup command is `streamlit run app.py`. Stop the server with Ctrl+C.
 
+## Spending speed
+
+Dashboard includes a Plotly speedometer showing the selected month's expense total as a percentage of its **All spending** budget. Set this overall budget to enable the gauge; category limits are not added together because they can overlap.
+
+The needle is capped at 100%, but the numerical percentage and over-budget amount keep their full values. A thin marker shows the expected calendar pace (day of month divided by the number of days). Current-month spending at or below that pace is On track, higher spending is Ahead of pace, and spending above the limit is Over budget. The difference is expressed in percentage points, not a misleading percentage of speed. Past months compare with the full budget; future months show Month not started. The comparison uses all recorded expenses in the selected month, including any future-dated records in that month. Bills paid early can put spending ahead of a straight-line pace without indicating a financial problem. This is a simple comparison, not financial advice.
+
+## Capture receipts with a camera
+
+On Dashboard, click **Capture receipt** (camera icon beside Quick Actions). Allow browser camera access, take a clear receipt photo, and click **Read receipt photo**. If the camera is unavailable, use **Or choose a receipt photo** for JPEG/PNG instead. Camera access requires localhost or HTTPS and a browser/device with a camera.
+
+Photo recognition uses the local Windows OCR engine. A photo is wrapped as a PDF locally; temporary OCR files are cleaned up. Check the extracted text, then click **Keep receipt and review transaction**. The document is stored only after that action, and a financial record is added only after **Save transaction**. Correct the amount, date, type and category first. Existing linked receipts are blocked from creating another transaction. Images are limited to 10 MB and 16 megapixels.
+
+## Scanned PDFs on Windows
+
+If a PDF has no selectable text, Documents offers **Read scanned PDF with OCR**. It uses the installed Windows OCR engine and PDF renderer locally; documents are not sent to an external service and no paid API is required. English OCR is available on the development computer. Other Windows installations may need the English OCR language feature installed.
+
+Scanned PDFs are limited to 10 MB and 20 pages, with a processing timeout. Words are grouped by position to preserve statement rows where possible. OCR text is cached for the upload within the session, and temporary processing files are cleaned up. Recognition can confuse dates, digits and decimal points, especially in small or blurry scans. Review the extracted text and all transaction drafts against the original. Parsing is not guaranteed for every statement layout. OCR itself never creates financial records. JPEG/PNG receipt photos are supported through Dashboard > Capture receipt; Documents continues to accept PDF/TXT/CSV.
+
 ## Compact entry and bank statements
 
 The popup has two-column **Quick entry** fields and an **Extra details** tab, so optional fields do not lengthen the form. Typing or changing a description updates a visible category suggestion when you press Enter or leave the field. Leave Category on Auto-detect, or select a category to override it. Rules recognize examples such as MegaMart/PriceSmart groceries, JPS electricity, NWC water, payroll and taxi/fuel expenses. Unknown descriptions remain Other; these are deterministic suggestions rather than AI certainty.
@@ -22,7 +40,7 @@ Upload a bank statement in **Documents**, then choose **Bank statement** (select
 
 The preview lets you edit descriptions, dates, amounts, categories and money direction, and exclude rows with Include. Uncertain money directions start excluded. Review the included income/expense/category totals, confirm the checkbox and click Import bank statement. Imported-file hashes block duplicates. Extraction notes report skipped dated rows; no parser claims to handle every bank layout. Use a CSV export if a PDF has wrapped descriptions, multiple monetary columns or unsupported dates. Opening/closing balance summary rows are excluded.
 
-PDF/TXT rows must contain a full date, description, transaction amount with two decimal places, optional DR/CR marker, and at most one trailing running balance. Layout extraction is heuristic: verify amounts and directions against the original. Photos/scanned PDFs still need OCR, which is not implemented. Statement amounts are interpreted as JMD; foreign-currency statements are unsupported. Files stay local.
+PDF/TXT rows must contain a full date, description, transaction amount with two decimal places, optional DR/CR marker, and at most one trailing running balance. Layout extraction is heuristic: verify amounts and directions against the original. Scanned PDFs can use the optional local Windows OCR button; verify every field carefully. Statement amounts are interpreted as JMD; foreign-currency statements are unsupported. Files stay local.
 
 Try the clearly fictional `assets/sample-bank-statement.csv` or `.txt` to see categorization and statement analysis without real banking details.
 
@@ -34,7 +52,7 @@ Use **Add money** or **Add spending** to open a compact popup. Only the amount i
 
 CSV transaction imports require an `amount` or `amount_jmd` column in JMD. Optional columns: `date` (YYYY-MM-DD), `description`, `type` (Income/Expense), `category`. Other categories map to Other. Without a type, rows default to Expense; negative amounts also default to Expense. Review the preview and confirm the import; no silent financial writes occur. Re-importing the same file is blocked while its imported transactions exist.
 
-Photos/scanned PDFs still require OCR and are not supported. Export a text-based PDF or enter its amount using the popup.
+For image-only PDFs on Windows, click Read scanned PDF with OCR. JPEG/PNG photos can be entered through Dashboard > Capture receipt, or save the scan as PDF for Documents.
 
 ## Features
 
@@ -71,7 +89,7 @@ Tests cover cents precision; income/expenses/balance/category/month calculations
 
 ## Limits
 
-This is educational software, not banking infrastructure. Files are local and unencrypted. No login, account synchronization, tax calculation, currency conversion, production concurrency control or financial advice engine is included. Use one app process and one user at a time. Scanned/encrypted PDFs and OCR are unsupported. UTF-8 is required for TXT/CSV; files are limited to 10 MB, PDFs to 100 pages and extracted text to one million characters. A malicious or unusually complex PDF may still consume processing time; use trusted school documents.
+This is educational software, not banking infrastructure. Files are local and unencrypted. No login, account synchronization, tax calculation, currency conversion, production concurrency control or financial advice engine is included. Use one app process and one user at a time. Encrypted PDFs are unsupported. Scanned-PDF OCR is optional and Windows-only, requires a Windows OCR language, and is limited to 20 pages. Recognition may misread or omit text. UTF-8 is required for TXT/CSV; files are limited to 10 MB, PDFs to 100 pages and extracted text to one million characters. A malicious or unusually complex PDF may still consume processing time; use trusted school documents.
 
 The assistant recognizes a documented set of financial question patterns; other questions use keyword overlap and may return several source excerpts rather than a generated synthesis. Document content is treated as text, never instructions. No transactions are automatically created from uploads. “This month”/“last month” use the local Python system date; other questions use the reporting month. Configure your computer's local timezone correctly.
 

@@ -7,7 +7,7 @@ from services.core import Store, seed
 # Refresh stateless UI helpers when their source changes, including on servers
 # whose file watcher keeps imported modules cached. Financial services stay loaded.
 refresh_dependents=False
-for module_name in ['components.financial_widgets','components.design','screens.capture','screens.pages','components.shell']:
+for module_name in ['components.financial_widgets','components.design','components.spending_speed','screens.capture','screens.pages','components.shell']:
     ui_module=importlib.import_module(module_name)
     source_stamp=Path(ui_module.__file__).stat().st_mtime_ns
     if refresh_dependents or getattr(ui_module,'_ui_source_stamp',None)!=source_stamp:

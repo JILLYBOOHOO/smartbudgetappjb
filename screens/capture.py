@@ -104,13 +104,29 @@ def statement_preview(store,file,content,text,digest,save_document):
 def upload_flow(store):
     caption('Receipts, bills and bank statements · extracted locally · review before import.')
     file=st.file_uploader('Choose PDF, TXT or CSV',type=['pdf','txt','csv'],key='capture_file')
-    caption('Text PDFs are supported. Photos and scanned PDFs need a text-based export; image OCR is not installed.')
+    caption('Text PDFs, TXT and CSV are read locally. Image-only PDFs can use Windows OCR (up to 20 pages); always check the extracted amounts.')
     if file is None: return
     content=file.getvalue(); digest=hashlib.sha256(content).hexdigest()
     try:
         text=extract(file.name,content)
     except ValueError as exc:
-        st.error(str(exc)); return
+        if file.name.lower().endswith('.pdf') and 'No extractable text' in str(exc):
+            ocr_key='ocr_text_'+digest
+            text=st.session_state.get(ocr_key)
+            if not text:
+                st.info('This PDF contains scanned images. Use local OCR to turn those images into text.')
+                if not st.button('Read scanned PDF with OCR',type='primary',key='ocr_run_'+digest): return
+                try:
+                    from services.ocr import ocr_pdf
+                    with st.spinner('Reading scanned PDF locally. This can take a moment...'):
+                        text=ocr_pdf(content,store.root)
+                    st.session_state[ocr_key]=text
+                except ValueError as ocr_error:
+                    st.error(str(ocr_error)); return
+        else:
+            st.error(str(exc)); return
+    if st.session_state.get('ocr_text_'+digest):
+        st.warning('Text was read using OCR. Check every date, amount and money direction against the original before importing. Statement layouts may need a CSV export.')
     existing=next((d for d in store.load('documents') if d.get('digest')==digest),None)
     with st.expander('View extracted text'): st.text(text)
     looks_bank='statement' in file.name.lower() or bool(re.search(r'(?i)\b(?:opening balance|closing balance|debit[^\n]*credit|withdrawal[^\n]*deposit)\b',text))
@@ -157,12 +173,51 @@ def upload_flow(store):
             return
         review_form(store,draft,'receipt_'+digest,document=existing)
 
+def camera_flow(store):
+    st.subheader('Capture a receipt')
+    caption('Allow camera access when your browser asks, then take a clear photo. Nothing is recorded until you review and save.')
+    photo=st.camera_input('Take a receipt photo',key='receipt_camera')
+    fallback=st.file_uploader('Or choose a receipt photo',type=['jpg','jpeg','png'],key='receipt_camera_upload')
+    photo=photo if photo is not None else fallback
+    if photo is None:
+        caption('If the camera does not start, check the browser camera permission or use the photo upload above.')
+        return
+    content=photo.getvalue();digest=hashlib.sha256(content).hexdigest()
+    text_key='camera_text_'+digest;pdf_key='camera_pdf_'+digest
+    if text_key not in st.session_state:
+        if not st.button('Read receipt photo',type='primary',key='read_photo_'+digest): return
+        try:
+            from services.ocr import photo_to_pdf,ocr_pdf
+            with st.spinner('Reading your receipt locally...'):
+                pdf=photo_to_pdf(content);text=ocr_pdf(pdf,store.root)
+            st.session_state[text_key]=text;st.session_state[pdf_key]=pdf
+        except ValueError as exc:
+            st.error(str(exc)); return
+    text=st.session_state[text_key]
+    st.warning('OCR can misread amounts and dates. Check the details against your receipt before saving.')
+    with st.expander('View receipt text'): st.text(text)
+    existing=next((d for d in store.load('documents') if d.get('digest')==digest),None)
+    if not existing:
+        if st.button('Keep receipt and review transaction',type='primary',key='keep_photo_'+digest):
+            identifier=uid();filename=identifier+'.pdf';pdf=st.session_state[pdf_key]
+            (store.root/'uploads'/filename).write_bytes(pdf)
+            store.put('documents',dict(id=identifier,name='Camera receipt.pdf',file=filename,text=text,size=len(pdf),digest=digest,date=date.today().isoformat()))
+            st.rerun(scope='app')
+        return
+    if any(r.get('document_id')==existing['id'] for r in store.load('transactions')):
+        st.success('This receipt already has a saved transaction. You can edit it in Income & Expenses.')
+        return
+    review_form(store,suggest(text),'camera_review_'+digest,document=existing)
+
+
 def dismiss_capture():
     st.session_state.pop('capture_mode',None)
 
 @st.dialog('Add money activity',width='medium',on_dismiss=dismiss_capture)
 def capture_dialog(store):
     mode=st.session_state.get('capture_mode','Expense')
+    if mode=='Camera':
+        camera_flow(store); return
     if mode=='Upload':
         upload_flow(store); return
     with st.popover('✦ Type a sentence instead'):

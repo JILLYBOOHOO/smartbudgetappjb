@@ -37,21 +37,37 @@ def dashboard(store):
     for _ in range(11): spark_months.append(previous(spark_months[-1]))
     spark_months.reverse()
     history={tone:[totals(period(rows,m))[idx] for m in spark_months] for tone,idx in [('income',0),('expense',1)]}
-    summary_cards([
+    card_action=summary_cards([
         ('income','↑','Total Income',inc,f'{(inc-old_inc)/old_inc:+.1%} vs previous month' if old_inc else 'Selected reporting month'),
         ('expense','↙','Total Expenses',exp,f'{exp/inc:.1%} of recorded income' if inc else 'No income recorded'),
         ('balance','▣','Available Balance',net,'Period net cash flow'),
         ('savings','◎','Savings',savings,f'{savings/target:.0%} of combined targets' if target else 'Set your first savings goal'),
     ],history=history,progress=min(savings/target,1) if target else 0)
+    selected_card=getattr(card_action,'add_record',None)
+    if selected_card in ('income','expense'):
+        for flag in ('budget_open','savings_open','contribution_open'):
+            st.session_state.pop(flag,None)
+        request_capture('Income' if selected_card=='income' else 'Expense')
+    elif selected_card=='savings':
+        st.session_state.pop('capture_mode',None)
+        st.session_state.pop('budget_open',None)
+        st.session_state.pop('savings_open',None)
+        if goals:
+            st.session_state.contribution_open=True
+        else:
+            st.session_state.savings_open=True
+    from components.spending_speed import spending_speed
+    spending_speed(rows,budgets,month)
     st.subheader('Quick Actions')
     with st.container(key='quick_actions'):
         cols=st.columns(6)
-        cols[0].button('Add Income',icon=':material/add:',on_click=request_capture,args=('Income',),width='stretch')
+        cols[0].button('Add Income',icon=':material/add_circle:',on_click=request_capture,args=('Income',),width='stretch')
         cols[1].button('Add Expense',icon=':material/receipt_long:',on_click=request_capture,args=('Expense',),width='stretch')
-        cols[2].button('Upload Bill',icon=':material/document_scanner:',on_click=request_capture,args=('Upload',),width='stretch')
-        cols[3].button('Set Budget',icon=':material/track_changes:',on_click=lambda:st.session_state.update(budget_open=True),width='stretch')
-        cols[4].button('Transactions',icon=':material/format_list_bulleted:',on_click=go_to,args=('Income & Expenses',),width='stretch')
+        cols[2].button('Upload Bill',icon=':material/upload_file:',on_click=request_capture,args=('Upload',),width='stretch')
+        cols[3].button('Set Budget',icon=':material/target:',on_click=lambda:st.session_state.update(budget_open=True),width='stretch')
+        cols[4].button('Transactions',icon=':material/sync_alt:',on_click=go_to,args=('Income & Expenses',),width='stretch')
         cols[5].button('Ask SmartBudget',icon=':material/auto_awesome:',on_click=go_to,args=('Ask SmartBudget',),width='stretch')
+        st.button('Capture receipt',icon=':material/photo_camera:',key='orbit_capture',on_click=request_capture,args=('Camera',),width='stretch')
     with st.container(key='analytics'):
         left,right=st.columns(2)
         with left:

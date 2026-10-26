@@ -228,7 +228,7 @@ def extract(name, content):
     except Exception as exc:
         raise ValueError(f'Cannot process this document: {type(exc).__name__}. Use a readable UTF-8 text/CSV or unencrypted text PDF.') from exc
     if not text.strip():
-        raise ValueError('No extractable text. This may be a scanned PDF. OCR is not available; upload a text-based version.')
+        raise ValueError('No extractable text. This may be a scanned PDF. Try local OCR or upload a text-based version.')
     if len(text) > 1_000_000:
         raise ValueError('Extracted text exceeds the one-million-character limit.')
     return text
